@@ -15,8 +15,8 @@ sudo apt update && sudo apt upgrade -y
 sudo apt install -y python3 python3-pip python3-venv git nginx haproxy certbot python3-certbot-nginx
 
 
-# 3. Clonar el repositorio del portal
-sudo git clone https://github.com/usuario/portal-tutorias.git /opt/tutorias
+# 3. Crear carpeta manualmente
+sudo mkdir -p /opt/tutorias
 cd /opt/tutorias
 
 
