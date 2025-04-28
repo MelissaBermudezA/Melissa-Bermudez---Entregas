@@ -23,7 +23,7 @@ cd /opt/tutorias
 # 4. Crear entorno virtual e instalar dependencias
 python3 -m venv venv
 source venv/bin/activate
-pip install -r requirements.txt
+# pip install -r requirements.txt
 
 
 # 5. Configurar Gunicorn como servicio
