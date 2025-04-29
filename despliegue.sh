@@ -4,27 +4,27 @@
 # Curso: Alta Disponibilidad y Balanceo de Carga
 # Fecha: Abril 2025
 
-set -e // Detiene ejecución si hay errores graves
+set -e # Detiene ejecución si hay errores graves
 
-// 1. Actualizar el sistema
+# 1. Actualizar el sistema
 echo "▶️ Actualizando sistema..."
 sudo apt update && sudo apt upgrade -y
 
-// 2. Instalación de dependencias
+# 2. Instalación de dependencias
 echo "▶️ Instalando dependencias necesarias..."
 sudo apt install -y python3 python3-pip python3-venv git nginx haproxy certbot python3-certbot-nginx
 
-// 3. Crear carpeta del proyecto
+# 3. Crear carpeta del proyecto
 echo "▶️ Creando carpeta de despliegue en /opt/tutorias..."
 sudo mkdir -p /opt/tutorias
 cd /opt/tutorias
 
-// (Opcional) Clonar proyecto real si existe, o crear un app.py básico de prueba
+# (Opcional) Clonar proyecto real si existe, o crear un app.py básico de prueba
 echo "▶️ Configurando aplicación básica de Flask..."
 python3 -m venv venv
 source venv/bin/activate
 
-// Crear una app básica si no tienes código real todavía
+# Crear una app básica si no tienes código real todavía
 cat <<EOF > app.py
 from flask import Flask
 app = Flask(__name__)
@@ -36,7 +36,7 @@ EOF
 
 pip install flask gunicorn
 
-// 4. Configurar Gunicorn como servicio systemd
+# 4. Configurar Gunicorn como servicio systemd
 echo "▶️ Configurando Gunicorn como servicio systemd..."
 cat <<EOF | sudo tee /etc/systemd/system/tutorias.service
 [Unit]
@@ -57,7 +57,7 @@ sudo systemctl daemon-reload
 sudo systemctl enable tutorias
 sudo systemctl start tutorias
 
-// 5. Configurar HAProxy
+# 5. Configurar HAProxy
 echo "▶️ Configurando HAProxy para balanceo de carga..."
 sudo tee /etc/haproxy/haproxy.cfg > /dev/null <<EOF
 global
@@ -82,7 +82,7 @@ EOF
 
 sudo systemctl restart haproxy
 
-// 6. Configurar NGINX como Proxy inverso
+# 6. Configurar NGINX como Proxy inverso
 echo "▶️ Configurando NGINX como proxy inverso..."
 sudo tee /etc/nginx/sites-available/tutorias > /dev/null <<EOF
 server {
@@ -100,16 +100,16 @@ EOF
 sudo ln -sf /etc/nginx/sites-available/tutorias /etc/nginx/sites-enabled/
 sudo nginx -t && sudo systemctl reload nginx
 
-// 7. (Opcional) Solicitar Certificado SSL
+# 7. (Opcional) Solicitar Certificado SSL
 echo "▶️ Intentando solicitar certificado SSL con Let's Encrypt..."
 if ! sudo certbot --nginx -d 190.113.110.160 --non-interactive --agree-tos -m melissa.bermudez1@ulatina.net; then
   echo "⚠️ No se pudo emitir certificado SSL (posiblemente porque es una IP). Continúa usando HTTP."
 fi
 
-// 8. (Opcional) Redireccionar HTTP a HTTPS
+# 8. (Opcional) Redireccionar HTTP a HTTPS
 echo "▶️ (Opcional) Configurando redirección HTTP ➔ HTTPS..."
 sudo sed -i '/listen 80;/a return 301 https://\$host\$request_uri;' /etc/nginx/sites-available/tutorias || true
 sudo systemctl reload nginx
 
-// 9. Mensaje final
+# 9. Mensaje final
 echo -e "\n✅ Despliegue completado exitosamente. Accede al portal en: http://190.113.110.160 o https://190.113.110.160 (si SSL disponible)"
