@@ -87,7 +87,7 @@ echo "▶️ Configurando NGINX como proxy inverso..."
 sudo tee /etc/nginx/sites-available/tutorias > /dev/null <<EOF
 server {
     listen 80;
-    server_name 190.113.110.160; // Cambiar por IP real o dominio
+    server_name 190.113.110.160; # Cambiar por IP real o dominio
 
     location / {
         proxy_pass http://localhost:8080;
